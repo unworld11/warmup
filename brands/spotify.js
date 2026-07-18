@@ -1,5 +1,5 @@
-// Spotify — the per-deal config. Dark theme, green accent, Jakarta stand-in for
-// Circular. All content is original mood/vibe copy — no real songs or artists.
+// Spotify, the per-deal config. Dark theme, green accent, Jakarta stand-in for
+// Circular. All content is original mood/vibe copy, no real songs or artists.
 
 const A = 'https://cdn.jsdelivr.net/gh/unworld11/warmup@main/public/content/spotify';
 
@@ -12,7 +12,7 @@ export const spotify = {
 
   // Dark-first tokens pulled from Spotify's design language.
   tokens: {
-    red: '#1ED760',          // the accent slot — Spotify green
+    red: '#1ED760',          // the accent slot, Spotify green
     redDark: '#1AB84C',
     gradient: 'linear-gradient(135deg, #1ED760 0%, #1DB954 100%)',
     ink: '#FFFFFF',
@@ -37,7 +37,7 @@ export const spotify = {
 
   hero: {
     headline: 'The whole world already scores its life to you. Let’s make the whole feed do it too.',
-    sub: 'Once a year your listeners turn your data into identity and post it everywhere. We manufacture that reflex every week — native content across thousands of accounts on TikTok and Reddit, in your voice.',
+    sub: 'Once a year your listeners turn your data into identity and post it everywhere. We manufacture that reflex every week, native content across thousands of accounts on TikTok and Reddit, in your voice.',
     ctaPrimary: 'See the week we built',
     ctaSecondary: 'Book 20 minutes',
   },
@@ -50,7 +50,7 @@ export const spotify = {
         stat: 'Wrapped',
         title: 'Your users already post for you',
         detail:
-          'Once a year, millions turn your data into a personality test and flood every feed with it. That reflex — “this is so me, I have to share it” — is a content engine you switch on for one week. We run it all fifty-two.',
+          'Once a year, millions turn your data into a personality test and flood every feed with it. That reflex, “this is so me, I have to share it”, is a content engine you switch on for one week. We run it all fifty-two.',
       },
       {
         stat: 'the sound',
@@ -62,13 +62,13 @@ export const spotify = {
         stat: '“this is my personality”',
         title: 'A playlist is a personality test',
         detail:
-          'Moods, eras, 2am drives — people relate to a playlist harder than to any ad. That relatability is the most saveable, most sendable content there is, and it rewards exactly the volume and range a fleet is built for.',
+          'Moods, eras, 2am drives, people relate to a playlist harder than to any ad. That relatability is the most saveable, most sendable content there is, and it rewards exactly the volume and range a fleet is built for.',
       },
     ],
   },
 
   content: {
-    heading: 'What we’d make for you — week one',
+    heading: 'What we’d make for you, week one',
     lead: 'Native slideshows and threads with Wrapped energy and mood-playlist relatability, in your voice, pushed across the fleet. Not ads. Content people repost as their own personality.',
     tiktoks: [
       {
@@ -131,11 +131,11 @@ export const spotify = {
 
   scale: {
     heading: 'How your week actually runs',
-    lead: 'No dashboard to learn, no calendar to fill. You greenlight once and the loop runs — this is the engine behind the content above.',
+    lead: 'No dashboard to learn, no calendar to fill. You greenlight once and the loop runs, this is the engine behind the content above.',
     steps: [
-      { n: '01', title: 'We study you', detail: 'Your Wrapped, your most-shared moments, the exact way your playlists get talked about. That read sets every template — so it always sounds like your listeners, never like an ad.' },
-      { n: '02', title: 'We make the week', detail: 'Native slideshows and threads like the three above — Wrapped energy, mood-playlist relatability. Made to be reposted as someone’s personality, not scrolled past.' },
-      { n: '03', title: 'The fleet posts it', detail: 'Thousands of aged, warmed accounts push it across TikTok and Reddit as real fans finding a feeling. Not one brand handle — a thousand quiet “this is so me” moments.' },
+      { n: '01', title: 'We study you', detail: 'Your Wrapped, your most-shared moments, the exact way your playlists get talked about. That read sets every template, so it always sounds like your listeners, never like an ad.' },
+      { n: '02', title: 'We make the week', detail: 'Native slideshows and threads like the three above, Wrapped energy, mood-playlist relatability. Made to be reposted as someone’s personality, not scrolled past.' },
+      { n: '03', title: 'The fleet posts it', detail: 'Thousands of aged, warmed accounts push it across TikTok and Reddit as real fans finding a feeling. Not one brand handle, a thousand quiet “this is so me” moments.' },
       { n: '04', title: 'Saves compound', detail: 'We watch what gets saved and sent, double down on the winners, and feed them into next week. Every week gets sharper. Zero ad spend.' },
     ],
     stats: [
@@ -148,7 +148,7 @@ export const spotify = {
 
   cta: {
     headline: 'This is one week. Wrapped is one day.',
-    sub: 'Everything on this page was made for Spotify, by us, this week. If it made you want to reply — that’s the exact reflex we sell, all year.',
+    sub: 'Everything on this page was made for Spotify, by us, this week. If it made you want to reply, that’s the exact reflex we sell, all year.',
     button: 'Book the next 20 minutes',
   },
 };

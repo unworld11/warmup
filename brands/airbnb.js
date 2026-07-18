@@ -1,7 +1,7 @@
-// Airbnb — the per-deal config. Design tokens were extracted from airbnb.com.
+// Airbnb, the per-deal config. Design tokens were extracted from airbnb.com.
 // The research, content and Reddit angle are built from a real pull of their last
 // 25 TikTok posts + the Reddit threads written about them. Copy is original,
-// modeled on their DNA — never lifted verbatim.
+// modeled on their DNA, never lifted verbatim.
 
 const A = 'https://cdn.jsdelivr.net/gh/unworld11/warmup@main/public/content/airbnb';
 
@@ -39,12 +39,12 @@ export const airbnb = {
 
   hero: {
     headline: 'You make the best travel content on the internet. Almost nobody sees most of it.',
-    sub: 'Your culture posts hit millions; the rest of the feed gets follower-tier reach — and the loudest conversations about you are happening on Reddit without you. We take what already works and manufacture its reach, across thousands of native accounts, every week, in your voice.',
+    sub: 'Your culture posts hit millions; the rest of the feed gets follower-tier reach, and the loudest conversations about you are happening on Reddit without you. We take what already works and manufacture its reach, across thousands of native accounts, every week, in your voice.',
     ctaPrimary: 'See the week we built',
     ctaSecondary: 'Book 20 minutes',
   },
 
-  // "What we saw" — grounded in the real pull, not guesses.
+  // "What we saw", grounded in the real pull, not guesses.
   research: {
     heading: 'What we saw when we studied your feed',
     lead: 'We read your last 25 posts and the Reddit threads written about you this month. Three things jumped out.',
@@ -53,27 +53,27 @@ export const airbnb = {
         stat: '7.7M vs 2K',
         title: 'Your culture posts fly. Your campaign posts don’t.',
         detail:
-          'The culturally-rooted ones — a love letter to a host nation, a creator breaking his foot for the bit — cleared millions of views. Most of the feed, the ticket drops and bracket updates, sits at two to four thousand. You’re making culture-tier creative and getting follower-tier reach on the bulk of it. The fix isn’t better content — it’s volume and distribution of what already works.',
+          'The culturally-rooted ones, a love letter to a host nation, a creator breaking his foot for the bit, cleared millions of views. Most of the feed, the ticket drops and bracket updates, sits at two to four thousand. You’re making culture-tier creative and getting follower-tier reach on the bulk of it. The fix isn’t better content, it’s volume and distribution of what already works.',
       },
       {
         stat: 'r/airbnb',
         title: 'Your loudest conversations are happening without you',
         detail:
-          'The top Airbnb threads on Reddit right now: “greed is ruining the lake,” a $10,000 cancelled booking, the fallout from New York’s ban. Real intent, real sentiment, thousands of readers — and the brand isn’t in the room. That’s a narrative you can enter natively, at scale, with the authentic host and guest stories you already have.',
+          'The top Airbnb threads on Reddit right now: “greed is ruining the lake,” a $10,000 cancelled booking, the fallout from New York’s ban. Real intent, real sentiment, thousands of readers, and the brand isn’t in the room. That’s a narrative you can enter natively, at scale, with the authentic host and guest stories you already have.',
       },
       {
         stat: '3 creators',
         title: 'You lean on a few big names; the corners are open',
         detail:
-          'The creator series and partners are great, but the reach is centralised. The travel-tok, host-story and city-guide corners — where someone actually decides which city to fly to and where to stay — are wide open, and mostly not you.',
+          'The creator series and partners are great, but the reach is centralised. The travel-tok, host-story and city-guide corners, where someone actually decides which city to fly to and where to stay, are wide open, and mostly not you.',
       },
     ],
   },
 
-  // "What we'd make" — modeled on their real DNA (host-city travel, Experiences,
+  // "What we'd make", modeled on their real DNA (host-city travel, Experiences,
   // "hosts who feel like family", creator-POV city culture).
   content: {
-    heading: 'What we’d make for you — week one',
+    heading: 'What we’d make for you, week one',
     lead: 'Modeled on your last 25 posts, in your voice, not a brand-ad voice. Native slideshows and threads built to travel the way your best posts already do.',
     tiktoks: [
       {
@@ -117,7 +117,7 @@ export const airbnb = {
       },
     ],
     // Enters the REAL (mostly critical) Reddit conversation with an authentic,
-    // credible positive story — the narrative gap from insight #2.
+    // credible positive story, the narrative gap from insight #2.
     reddit: {
       subreddit: 'r/travel',
       posted: '9h',
@@ -138,11 +138,11 @@ export const airbnb = {
 
   scale: {
     heading: 'How your week actually runs',
-    lead: 'No dashboard to learn, no calendar to fill. You greenlight once and the loop runs — this is the engine behind the content above.',
+    lead: 'No dashboard to learn, no calendar to fill. You greenlight once and the loop runs, this is the engine behind the content above.',
     steps: [
-      { n: '01', title: 'We study you', detail: 'We pull your last 25 posts and the threads people write about you, and read what actually travels versus what falls flat. That read sets every template — so it sounds like your best work, never like an ad.' },
+      { n: '01', title: 'We study you', detail: 'We pull your last 25 posts and the threads people write about you, and read what actually travels versus what falls flat. That read sets every template, so it sounds like your best work, never like an ad.' },
       { n: '02', title: 'We make the week', detail: 'Native slideshows and threads like the three above, modeled on what already resonates for you. Made to be saved and sent, not scrolled past.' },
-      { n: '03', title: 'The fleet posts it', detail: 'Thousands of aged, warmed accounts push it across TikTok and Reddit as real people finding your stays and experiences. Not one megaphone — a thousand quiet recommendations, including in the threads you’re currently absent from.' },
+      { n: '03', title: 'The fleet posts it', detail: 'Thousands of aged, warmed accounts push it across TikTok and Reddit as real people finding your stays and experiences. Not one megaphone, a thousand quiet recommendations, including in the threads you’re currently absent from.' },
       { n: '04', title: 'Saves compound', detail: 'We watch what gets saved and sent, double down on the winners, and feed them into next week. Every week gets sharper. Zero ad spend.' },
     ],
     stats: [
@@ -155,7 +155,7 @@ export const airbnb = {
 
   cta: {
     headline: 'This is one week. Imagine fifty-two.',
-    sub: 'Everything on this page was built from your real posts and the real conversations about you, this week. If it made you want to reply — that’s exactly the reflex we sell.',
+    sub: 'Everything on this page was built from your real posts and the real conversations about you, this week. If it made you want to reply, that’s exactly the reflex we sell.',
     button: 'Book the next 20 minutes',
   },
 };
