@@ -21,6 +21,11 @@ export const airbnb = {
     line: '#DDDDDD',
     surface: '#F7F7F7',
     bg: '#FFFFFF',
+    card: '#FFFFFF',
+    navBg: 'rgba(255,255,255,0.92)',
+    onAccent: '#FFFFFF',       // text on the red button
+    ctaBg: 'linear-gradient(135deg, #E61E4D 0%, #E31C5F 50%, #C1185B 100%)',
+    ctaText: '#FFFFFF',
     radius: '16px',
     radiusLg: '24px',
     font: 'var(--font-manrope), system-ui, sans-serif',

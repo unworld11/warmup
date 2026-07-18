@@ -18,6 +18,12 @@ export default function StrategyPage({ brand }) {
     '--line': t.line,
     '--surface': t.surface,
     '--bg': t.bg,
+    // theming tokens that let one template render light (Airbnb) and dark (Spotify) brands
+    '--card': t.card || t.bg,
+    '--nav-bg': t.navBg,
+    '--on-accent': t.onAccent || '#fff',
+    '--cta-bg': t.ctaBg || t.gradient,
+    '--cta-text': t.ctaText || '#fff',
     '--radius': t.radius,
     '--radius-lg': t.radiusLg,
     '--brand-font': t.font,

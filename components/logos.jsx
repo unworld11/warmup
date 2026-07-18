@@ -9,13 +9,30 @@ export function Belo({ size = 32, color = '#FF385C' }) {
   );
 }
 
+export function Spotify({ size = 32, color = '#1ED760' }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" aria-label="Spotify" role="img">
+      <circle cx="12" cy="12" r="12" fill={color} />
+      <path d="M5.6 9.4c4.2-1.1 8.6-0.7 12 1.3" stroke="#121212" strokeWidth="1.7" fill="none" strokeLinecap="round" />
+      <path d="M6.3 12.7c3.4-0.9 6.9-0.5 9.6 1.1" stroke="#121212" strokeWidth="1.5" fill="none" strokeLinecap="round" />
+      <path d="M6.9 15.7c2.7-0.7 5.4-0.4 7.6 0.9" stroke="#121212" strokeWidth="1.3" fill="none" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+const MARKS = { belo: Belo, spotify: Spotify };
+
 export function BrandLogo({ brand, size = 32 }) {
-  if (brand.logo === 'belo') {
+  const Mark = MARKS[brand.logo];
+  if (Mark) {
+    // wordmark colour tracks the brand: Airbnb's is Rausch red, Spotify's is white
+    const wordColor = brand.logo === 'spotify' ? brand.tokens.ink : brand.tokens.red;
+    const label = brand.logo === 'belo' ? brand.name.toLowerCase() : brand.name;
     return (
       <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-        <Belo size={size} color={brand.tokens.red} />
-        <span style={{ fontSize: size * 0.78, fontWeight: 700, color: brand.tokens.red, letterSpacing: '-0.02em' }}>
-          {brand.name.toLowerCase()}
+        <Mark size={size} color={brand.tokens.red} />
+        <span style={{ fontSize: size * 0.78, fontWeight: 700, color: wordColor, letterSpacing: '-0.02em' }}>
+          {label}
         </span>
       </span>
     );

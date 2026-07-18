@@ -1,4 +1,4 @@
 node_modules
 .next
 .env*
-public/content/airbnb/_orig/
+public/content/*/_orig/

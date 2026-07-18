@@ -1,12 +1,19 @@
-import { Manrope } from 'next/font/google';
+import { Manrope, Plus_Jakarta_Sans } from 'next/font/google';
 import './globals.css';
 
-// Manrope: a free geometric sans chosen as a deliberate stand-in for Airbnb Cereal
-// (proprietary). Rounded, even, closed apertures — it carries the "feels like them" load.
+// Each brand names its own free stand-in for a proprietary face. Manrope stands in
+// for Airbnb Cereal; Plus Jakarta Sans for Spotify Circular. Both load here; a
+// brand's tokens.font picks which one carries the "feels like them" load.
 const manrope = Manrope({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700', '800'],
   variable: '--font-manrope',
+});
+
+const jakarta = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-jakarta',
 });
 
 export const metadata = {
@@ -17,7 +24,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={manrope.variable}>
+    <html lang="en" className={`${manrope.variable} ${jakarta.variable}`}>
       <body>{children}</body>
     </html>
   );

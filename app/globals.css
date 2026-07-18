@@ -27,9 +27,9 @@ img { display: block; max-width: 100%; }
   white-space: nowrap;
 }
 .wm-pill-lg { padding: 15px 26px; font-size: 16px; }
-.wm-pill-solid { background: var(--red); color: #fff; }
+.wm-pill-solid { background: var(--red); color: var(--on-accent); }
 .wm-pill-solid:hover { background: var(--red-dark); }
-.wm-pill-grad { background: var(--gradient); color: #fff; box-shadow: 0 6px 18px rgba(227, 28, 95, 0.28); }
+.wm-pill-grad { background: var(--gradient); color: var(--on-accent); box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18); }
 .wm-pill-grad:hover { filter: brightness(1.05); transform: translateY(-1px); }
 .wm-pill-ghost { background: transparent; color: var(--ink); border: 1px solid var(--ink); }
 .wm-pill-ghost:hover { background: rgba(0,0,0,0.04); }
@@ -39,7 +39,7 @@ img { display: block; max-width: 100%; }
 /* ------------------------------- nav -------------------------------- */
 .wm-nav {
   position: sticky; top: 0; z-index: 50;
-  background: rgba(255,255,255,0.92);
+  background: var(--nav-bg);
   backdrop-filter: saturate(180%) blur(12px);
   border-bottom: 1px solid var(--line);
 }
@@ -80,7 +80,7 @@ img { display: block; max-width: 100%; }
 
 /* --------------------------- research ------------------------------- */
 .wm-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 44px; }
-.wm-card { background: var(--bg); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 30px; transition: transform .16s ease, box-shadow .2s ease; }
+.wm-card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 30px; transition: transform .16s ease, box-shadow .2s ease; }
 .wm-card:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
 .wm-card-stat { font-size: 19px; font-weight: 800; color: var(--red); margin-bottom: 16px; letter-spacing: -0.01em; }
 .wm-card-title { font-size: 20px; font-weight: 800; color: var(--ink); margin: 0 0 10px; }
@@ -148,17 +148,17 @@ img { display: block; max-width: 100%; }
 /* --------------------------- how it runs ---------------------------- */
 .wm-how { background: var(--surface); }
 .wm-steps { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 48px; }
-.wm-step { display: flex; gap: 18px; background: var(--bg); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 26px 28px; }
+.wm-step { display: flex; gap: 18px; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 26px 28px; }
 .wm-step-n { font-size: 20px; font-weight: 800; color: var(--red); letter-spacing: -0.02em; line-height: 1.3; flex-shrink: 0; }
 .wm-step-title { font-size: 18px; font-weight: 800; color: var(--ink); margin: 0 0 8px; }
 .wm-step-detail { font-size: 14.5px; color: var(--muted); line-height: 1.6; margin: 0; }
 .wm-strip { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; margin-top: 40px; }
-.wm-strip-item { display: inline-flex; align-items: baseline; gap: 8px; background: var(--bg); border: 1px solid var(--line); border-radius: 999px; padding: 10px 20px; }
+.wm-strip-item { display: inline-flex; align-items: baseline; gap: 8px; background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 10px 20px; }
 .wm-strip-value { font-size: 20px; font-weight: 800; color: var(--red); letter-spacing: -0.02em; }
 .wm-strip-label { font-size: 14px; color: var(--muted); font-weight: 600; }
 
 /* ------------------------------- cta -------------------------------- */
-.wm-cta { background: var(--gradient); color: #fff; padding: 96px 0 0; }
+.wm-cta { background: var(--cta-bg); color: var(--cta-text); padding: 96px 0 0; }
 .wm-cta-inner { max-width: 760px; text-align: center; }
 .wm-cta-h { font-size: clamp(30px, 4vw, 46px); font-weight: 800; margin: 0; letter-spacing: -0.02em; }
 .wm-cta-sub { font-size: 18px; line-height: 1.6; margin: 18px 0 0; opacity: 0.94; }
