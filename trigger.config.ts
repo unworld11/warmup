@@ -1,8 +1,8 @@
 import { defineConfig } from '@trigger.dev/sdk';
 
-// The project ref comes from your Trigger.dev project (set TRIGGER_PROJECT_ID).
+// Your warmup Trigger.dev project. Override with TRIGGER_PROJECT_ID if needed.
 export default defineConfig({
-  project: process.env.TRIGGER_PROJECT_ID || '',
+  project: process.env.TRIGGER_PROJECT_ID || 'proj_civprxkuxybbsqefqfon',
   dirs: ['./trigger'],
   maxDuration: 1200,
   retries: {
