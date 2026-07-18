@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import StrategyPage from '../../components/StrategyPage';
+import s from './studio.module.css';
 
 const FALLBACK_TOKENS = {
   red: '#1a1a1a', redDark: '#000000', gradient: 'linear-gradient(135deg,#333,#000)',
@@ -11,21 +12,21 @@ const FALLBACK_TOKENS = {
   radius: '16px', radiusLg: '24px', font: 'var(--font-manrope), system-ui, sans-serif',
 };
 const BOOKING = 'mailto:you@yourteam.com?subject=Re%3A%20the%20page%20you%20built';
+const STEPS = [{ key: 'research', label: 'Research' }, { key: 'study', label: 'Study' }, { key: 'image', label: 'Imagery' }];
+const CHIPS = ['airbnb.com', 'spotify.com', 'nike.com', 'glossier.com'];
+const FAILED = ['FAILED', 'CRASHED', 'CANCELED', 'SYSTEM_FAILURE', 'INTERRUPTED', 'TIMED_OUT', 'EXPIRED'];
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-// Maps a synthesized config (image PROMPTS) + an image map into the shape
-// StrategyPage renders (image URLs, avatars, reddit thumb).
 function assemble(config, site, imgMap) {
   const tiktoks = (config.content?.tiktoks || []).map((t) => {
-    const slides = (t.slides || []).map((s) => ({ img: imgMap[s.imagePrompt] || '', overlay: s.overlay || '', sub: s.sub || '' }));
+    const slides = (t.slides || []).map((sl) => ({ img: imgMap[sl.imagePrompt] || '', overlay: sl.overlay || '', sub: sl.sub || '' }));
     return { ...t, slides, avatarImg: slides[0]?.img || '' };
   });
   const r = config.content?.reddit || {};
   const [ti, si] = r.thumbFromSlide || [0, 0];
   const thumb = tiktoks[ti]?.slides?.[si]?.img || tiktoks[0]?.slides?.[0]?.img || '';
   return {
-    name: config.name || site?.name || 'Brand',
-    logo: '',
-    bookingUrl: BOOKING,
+    name: config.name || site?.name || 'Brand', logo: '', bookingUrl: BOOKING,
     tokens: { ...FALLBACK_TOKENS, ...(config.tokens || {}) },
     prepared: config.prepared || { eyebrow: 'A content engine, proposed for', note: '' },
     hero: config.hero || {},
@@ -38,58 +39,61 @@ function assemble(config, site, imgMap) {
 
 const promptsOf = (config) => {
   const out = [];
-  (config.content?.tiktoks || []).forEach((t) => (t.slides || []).forEach((s) => s.imagePrompt && out.push(s.imagePrompt)));
+  (config.content?.tiktoks || []).forEach((t) => (t.slides || []).forEach((sl) => sl.imagePrompt && out.push(sl.imagePrompt)));
   return [...new Set(out)];
 };
 
 export default function Generate() {
   const [url, setUrl] = useState('');
-  const [status, setStatus] = useState('');
-  const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+  const [phase, setPhase] = useState('');
+  const [detail, setDetail] = useState('');
   const [brand, setBrand] = useState(null);
   const [site, setSite] = useState(null);
-  const [config, setConfig] = useState(null);     // raw synthesis (has imagePrompts)
-  const [imgMap, setImgMap] = useState({});        // imagePrompt -> data URL
+  const [config, setConfig] = useState(null);
+  const [imgMap, setImgMap] = useState({});
   const [refineText, setRefineText] = useState('');
   const [publishing, setPublishing] = useState(false);
   const [liveUrl, setLiveUrl] = useState('');
 
   async function post(path, body) {
     const res = await fetch(path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-    const json = await res.json();
-    if (json.error) throw new Error(json.error);
+    const text = await res.text();
+    let json = null;
+    try { json = text ? JSON.parse(text) : {}; } catch { throw new Error(res.status === 504 ? 'That step timed out. Try again.' : `Server error (${res.status}).`); }
+    if (!res.ok || json.error) throw new Error(json.error || `Request failed (${res.status})`);
     return json;
   }
 
-  // Generate images for any prompts not already in the map. Returns the merged map.
-  async function ensureImages(cfg, existing) {
-    const need = promptsOf(cfg).filter((p) => !existing[p]);
-    if (!need.length) return existing;
-    setStatus(`Generating ${need.length} content image${need.length > 1 ? 's' : ''}…`);
-    const pairs = await Promise.all(need.map(async (p) => {
-      try { const { dataUrl } = await post('/api/image', { prompt: p }); return [p, dataUrl]; }
-      catch { return [p, '']; }
-    }));
-    return { ...existing, ...Object.fromEntries(pairs) };
+  async function pollRun(runId) {
+    for (;;) {
+      await sleep(2000);
+      let j;
+      try {
+        const res = await fetch(`/api/run/${runId}`);
+        j = await res.json();
+      } catch { continue; }
+      if (j.error) throw new Error(j.error);
+      if (j.metadata) { setPhase(j.metadata.phase || ''); setDetail(j.metadata.detail || ''); }
+      if (j.status === 'COMPLETED') return j.output;
+      if (FAILED.includes(j.status)) throw new Error(`Generation failed (${j.status}).`);
+    }
   }
 
-  async function run(e) {
-    e.preventDefault();
-    if (!url.trim()) return;
-    setError(''); setBrand(null); setConfig(null); setImgMap({}); setLiveUrl(''); setBusy(true);
+  async function run(e, forced) {
+    if (e) e.preventDefault();
+    const target = (forced || url).trim();
+    if (!target) return;
+    if (forced) setUrl(forced);
+    setError(''); setBrand(null); setConfig(null); setImgMap({}); setLiveUrl(''); setBusy(true); setPhase('research'); setDetail('Starting the run…');
     try {
-      setStatus('Researching their real posts…');
-      const research = await post('/api/research', { url: url.trim() });
-      setSite(research.site);
-
-      setStatus(`Studying ${research.tiktok.length} posts and writing the week…`);
-      const { config: cfg } = await post('/api/synthesize', research);
-
-      const map = await ensureImages(cfg, {});
-      setConfig(cfg); setImgMap(map);
-      setBrand(assemble(cfg, research.site, map));
-      setStatus('');
+      const { runId } = await post('/api/generate', { url: target });
+      const out = await pollRun(runId);
+      if (!out) throw new Error('The run finished without output.');
+      setSite(out.site); setConfig(out.config); setImgMap(out.imgMap);
+      setBrand(assemble(out.config, out.site, out.imgMap));
+      setPhase(''); setDetail('');
     } catch (err) {
       setError(err.message || 'something went wrong');
     } finally {
@@ -97,16 +101,24 @@ export default function Generate() {
     }
   }
 
+  async function ensureImages(cfg, existing) {
+    const need = promptsOf(cfg).filter((p) => !existing[p]);
+    if (!need.length) return existing;
+    const pairs = await Promise.all(need.map(async (p) => {
+      try { const { dataUrl } = await post('/api/image', { prompt: p }); return [p, dataUrl]; } catch { return [p, '']; }
+    }));
+    return { ...existing, ...Object.fromEntries(pairs) };
+  }
+
   async function refine() {
     if (!refineText.trim() || !config) return;
     setError(''); setBusy(true); setLiveUrl('');
     try {
-      setStatus('Refining with Sol…');
       const { config: revised } = await post('/api/refine', { config, instruction: refineText.trim() });
       const map = await ensureImages(revised, imgMap);
       setConfig(revised); setImgMap(map);
       setBrand(assemble(revised, site, map));
-      setRefineText(''); setStatus('');
+      setRefineText('');
     } catch (err) {
       setError(err.message || 'refine failed');
     } finally {
@@ -126,63 +138,92 @@ export default function Generate() {
     }
   }
 
-  const inputStyle = { flex: 1, padding: '11px 14px', borderRadius: 10, border: '1px solid #ddd', fontSize: 15, outline: 'none' };
+  const activeIndex = phase === 'done' ? STEPS.length : STEPS.findIndex((st) => st.key === phase);
 
   return (
-    <div style={{ fontFamily: 'var(--font-manrope), system-ui, sans-serif', color: '#1a1a1a' }}>
-      <div style={{ borderBottom: '1px solid #eee', background: '#fff', position: 'sticky', top: 0, zIndex: 100 }}>
-        <form onSubmit={run} style={{ maxWidth: 900, margin: '0 auto', padding: '16px 24px', display: 'flex', gap: 10, alignItems: 'center' }}>
-          <span style={{ fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase', fontSize: 12, color: '#888' }}>warmup</span>
-          <input value={url} onChange={(e) => setUrl(e.target.value)} disabled={busy}
-            placeholder="paste a prospect's website url, e.g. airbnb.com" style={inputStyle} />
-          <button type="submit" disabled={busy}
-            style={{ padding: '11px 20px', borderRadius: 999, border: 'none', background: busy ? '#bbb' : '#111', color: '#fff', fontWeight: 700, fontSize: 15, cursor: busy ? 'default' : 'pointer' }}>
-            {busy ? 'Working…' : 'Generate'}
-          </button>
-        </form>
-      </div>
-
-      {(status || error) && (
-        <div style={{ maxWidth: 900, margin: '0 auto', padding: '14px 24px' }}>
-          {status && <p style={{ color: '#555', fontSize: 15 }}>⏳ {status}</p>}
-          {error && <p style={{ color: '#c0143c', fontSize: 15 }}>⚠ {error}</p>}
+    <div className={s.wrap}>
+      <header className={s.bar}>
+        <div className={s.barInner}>
+          <span className={s.logo}><span className={s.logoDot} />warmup studio</span>
+          {brand && (
+            <form className={s.form} onSubmit={run}>
+              <input className={s.input} value={url} onChange={(e) => setUrl(e.target.value)} disabled={busy} placeholder="new prospect url…" />
+              <button className={s.gen} type="submit" disabled={busy}>{busy ? 'Working…' : 'Generate'}</button>
+            </form>
+          )}
         </div>
-      )}
+      </header>
 
-      {!brand && !status && !error && (
-        <div style={{ maxWidth: 620, margin: '90px auto', padding: '0 24px', textAlign: 'center' }}>
-          <h1 style={{ fontSize: 38, fontWeight: 800, letterSpacing: '-0.02em', margin: '0 0 14px' }}>One URL in. A page they can’t ignore out.</h1>
-          <p style={{ fontSize: 18, color: '#666', lineHeight: 1.6 }}>
-            Paste a prospect’s site. We pull their real TikTok and Reddit posts, study what actually works for them, and generate a content proposal in their own design language, live. Then refine it in plain English and publish.
-          </p>
-        </div>
-      )}
-
-      {brand && (
-        <div style={{ borderBottom: '1px solid #eee', background: '#fafafa' }}>
-          <div style={{ maxWidth: 900, margin: '0 auto', padding: '12px 24px', display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
-            <input value={refineText} onChange={(e) => setRefineText(e.target.value)} disabled={busy}
-              onKeyDown={(e) => { if (e.key === 'Enter') refine(); }}
-              placeholder="refine in plain english, e.g. make the hero punchier, lean into their World Cup push" style={inputStyle} />
-            <button onClick={refine} disabled={busy || !refineText.trim()}
-              style={{ padding: '9px 18px', borderRadius: 999, border: '1px solid #111', background: '#fff', color: '#111', fontWeight: 700, fontSize: 14, cursor: busy ? 'default' : 'pointer' }}>
-              Refine
-            </button>
-            {liveUrl ? (
-              <a href={liveUrl} target="_blank" rel="noopener noreferrer" style={{ fontSize: 14, fontWeight: 700, color: '#0a7d33', whiteSpace: 'nowrap' }}>
-                ✓ Live at {liveUrl} →
-              </a>
-            ) : (
-              <button onClick={publish} disabled={publishing || busy}
-                style={{ padding: '9px 18px', borderRadius: 999, border: 'none', background: (publishing || busy) ? '#bbb' : '#0a7d33', color: '#fff', fontWeight: 700, fontSize: 14, cursor: (publishing || busy) ? 'default' : 'pointer', whiteSpace: 'nowrap' }}>
-                {publishing ? 'Publishing…' : 'Publish live'}
-              </button>
-            )}
+      {/* empty state */}
+      {!brand && !busy && (
+        <section className={s.hero}>
+          <div className={s.glow} />
+          <div className={s.heroInner}>
+            <p className={s.eyebrow}>warmup studio</p>
+            <h1 className={s.h1}>One URL in. A page they can’t ignore out.</h1>
+            <p className={s.sub}>Paste a prospect’s site. We pull their real TikTok and Reddit posts, study what actually works for them, and generate a content proposal in their own design language. Refine it in plain english, then publish it live.</p>
+            <form className={s.bigForm} onSubmit={run}>
+              <input className={s.bigInput} value={url} onChange={(e) => setUrl(e.target.value)} placeholder="paste a website url, e.g. airbnb.com" autoFocus />
+              <button className={s.bigGen} type="submit">Generate</button>
+            </form>
+            <div className={s.chips}>
+              <span className={s.chipLabel}>try</span>
+              {CHIPS.map((c) => <span key={c} className={s.chip} onClick={() => run(null, c)}>{c}</span>)}
+            </div>
+            {error && <p className={s.error} style={{ textAlign: 'center' }}>⚠ {error}</p>}
+            <div className={s.features}>
+              <span className={s.feature}><span className={s.featureDot}>●</span> Reads their real posts</span>
+              <span className={s.feature}><span className={s.featureDot}>●</span> In their design language</span>
+              <span className={s.feature}><span className={s.featureDot}>●</span> Publish in one click</span>
+            </div>
           </div>
-        </div>
+        </section>
       )}
 
-      {brand && <StrategyPage brand={brand} />}
+      {/* generating */}
+      {!brand && busy && (
+        <section className={s.progress}>
+          <div className={s.steps}>
+            {STEPS.map((st, i) => (
+              <div key={st.key} className={s.step}>
+                {i > 0 && <span className={`${s.line} ${i <= activeIndex ? s.lineDone : ''}`} />}
+                <span className={`${s.dot} ${i === activeIndex ? s.dotActive : ''} ${i < activeIndex ? s.dotDone : ''}`}>
+                  {i < activeIndex ? '✓' : i + 1}
+                </span>
+                <span className={`${s.stepLabel} ${i <= activeIndex ? s.stepLabelOn : ''}`}>{st.label}</span>
+              </div>
+            ))}
+          </div>
+          <p className={s.statusText}>{detail || 'Working…'}</p>
+          {error && <p className={s.error} style={{ textAlign: 'center' }}>⚠ {error}</p>}
+        </section>
+      )}
+
+      {/* result */}
+      {brand && (
+        <>
+          <div className={s.toolbar}>
+            <div className={s.toolbarInner}>
+              <div className={s.refineWrap}>
+                <span className={s.refineIcon}>✦</span>
+                <input className={s.refineInput} value={refineText} disabled={busy}
+                  onChange={(e) => setRefineText(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === 'Enter') refine(); }}
+                  placeholder="refine in plain english, e.g. make the hero punchier, lean into their newest campaign" />
+              </div>
+              <button className={s.refineBtn} onClick={refine} disabled={busy || !refineText.trim()}>Refine</button>
+              {busy && <span className={s.refiningPill}><span className={s.spin} /> refining</span>}
+              {liveUrl ? (
+                <a className={s.liveLink} href={liveUrl} target="_blank" rel="noopener noreferrer">✓ Live at {liveUrl} →</a>
+              ) : (
+                <button className={s.publishBtn} onClick={publish} disabled={publishing || busy}>{publishing ? 'Publishing…' : 'Publish live'}</button>
+              )}
+            </div>
+            {error && <p className={s.error}>⚠ {error}</p>}
+          </div>
+          <div className={s.fadeIn}><StrategyPage brand={brand} /></div>
+        </>
+      )}
     </div>
   );
 }
