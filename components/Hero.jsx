@@ -16,7 +16,7 @@ export default function Hero({ brand }) {
           <p className="wm-hero-sub">{h.sub}</p>
           <div className="wm-hero-actions">
             <a href="#work" className="wm-pill wm-pill-grad wm-pill-lg">{h.ctaPrimary}</a>
-            <a href="#book" className="wm-pill wm-pill-ghost wm-pill-lg">{h.ctaSecondary}</a>
+            <a href={brand.bookingUrl} className="wm-pill wm-pill-ghost wm-pill-lg" target="_blank" rel="noopener noreferrer">{h.ctaSecondary}</a>
           </div>
           <p className="wm-hero-note">{brand.prepared.note}</p>
         </div>

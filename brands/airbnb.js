@@ -7,6 +7,10 @@ export const airbnb = {
   name: 'Airbnb',
   logo: 'belo', // recreated Bélo mark, see components/logos.jsx
 
+  // Where every "book a call" button goes. Swap for your Calendly/Cal.com link
+  // per deal; a mailto is the always-works default.
+  bookingUrl: 'mailto:you@yourteam.com?subject=Re%3A%20the%20Airbnb%20page%20you%20built&body=Saw%20it.%20Let%E2%80%99s%20talk.',
+
   // Tokens pulled off the live site (computed styles), not memory.
   tokens: {
     red: '#FF385C',       // Rausch, the primary CTA
@@ -127,13 +131,19 @@ export const airbnb = {
   },
 
   scale: {
-    heading: 'And this goes out at your scale',
-    lead: 'The content above isn’t a one-off. It’s a weekly output from a fleet built to look like thousands of real people discovering your stays.',
+    heading: 'How your week actually runs',
+    lead: 'No dashboard to learn, no calendar to fill. You greenlight once and the loop runs — this is the engine behind the content above.',
+    steps: [
+      { n: '01', title: 'We study you', detail: 'Your listings, your best-performing posts, the exact way your stays get talked about. That read sets every template — so it always sounds like you, never like an ad.' },
+      { n: '02', title: 'We make the week', detail: 'Native slideshows and threads like the three above, seeded from real “Guest favourite” stays. Made to be saved and sent, not scrolled past.' },
+      { n: '03', title: 'The fleet posts it', detail: 'Thousands of aged, warmed accounts push it across TikTok and Reddit as real people finding your stays. Not one megaphone — a thousand quiet recommendations.' },
+      { n: '04', title: 'Saves compound', detail: 'We watch what gets saved and sent, double down on the winners, and feed them into next week. Every week gets sharper. Zero ad spend.' },
+    ],
     stats: [
-      { value: '1,000s', label: 'aged, warmed devices — not a botnet, real accounts with history' },
-      { value: '200+', label: 'native posts a week across TikTok & Reddit, in your voice' },
-      { value: '0', label: 'rupees of ad spend — this is earned feed, not bought' },
-      { value: '48h', label: 'from your greenlight to the first posts live' },
+      { value: '1,000s', label: 'aged devices' },
+      { value: '200+', label: 'native posts / week' },
+      { value: '₹0', label: 'ad spend' },
+      { value: '48h', label: 'to first posts live' },
     ],
   },
 

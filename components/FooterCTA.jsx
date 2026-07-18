@@ -9,7 +9,7 @@ export default function FooterCTA({ brand }) {
       <div className="wm-wrap wm-cta-inner">
         <h2 className="wm-cta-h">{c.headline}</h2>
         <p className="wm-cta-sub">{c.sub}</p>
-        <a href="#" className="wm-pill wm-pill-white wm-pill-lg">{c.button}</a>
+        <a href={brand.bookingUrl} className="wm-pill wm-pill-white wm-pill-lg" target="_blank" rel="noopener noreferrer">{c.button}</a>
       </div>
       <footer className="wm-footer">
         <span>Made for {brand.name}, this week.</span>
