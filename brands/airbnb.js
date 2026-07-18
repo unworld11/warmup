@@ -1,19 +1,20 @@
-// Airbnb — the per-deal config. Everything brand-specific lives here:
-// design tokens extracted from airbnb.com, the research read of their content,
-// and the example content we'd ship, written to match their DNA.
+// Airbnb — the per-deal config. Design tokens were extracted from airbnb.com.
+// The research, content and Reddit angle are built from a real pull of their last
+// 25 TikTok posts + the Reddit threads written about them. Copy is original,
+// modeled on their DNA — never lifted verbatim.
+
+const A = 'https://cdn.jsdelivr.net/gh/unworld11/warmup@main/public/content/airbnb';
 
 export const airbnb = {
   slug: 'airbnb',
   name: 'Airbnb',
-  logo: 'belo', // recreated Bélo mark, see components/logos.jsx
+  logo: 'belo',
 
-  // Where every "book a call" button goes. Swap for your Calendly/Cal.com link
-  // per deal; a mailto is the always-works default.
   bookingUrl: 'mailto:you@yourteam.com?subject=Re%3A%20the%20Airbnb%20page%20you%20built&body=Saw%20it.%20Let%E2%80%99s%20talk.',
 
   // Tokens pulled off the live site (computed styles), not memory.
   tokens: {
-    red: '#FF385C',       // Rausch, the primary CTA
+    red: '#FF385C',
     redDark: '#E00B41',
     gradient: 'linear-gradient(135deg, #E61E4D 0%, #E31C5F 50%, #C1185B 100%)',
     ink: '#222222',
@@ -23,7 +24,7 @@ export const airbnb = {
     bg: '#FFFFFF',
     card: '#FFFFFF',
     navBg: 'rgba(255,255,255,0.92)',
-    onAccent: '#FFFFFF',       // text on the red button
+    onAccent: '#FFFFFF',
     ctaBg: 'linear-gradient(135deg, #E61E4D 0%, #E31C5F 50%, #C1185B 100%)',
     ctaText: '#FFFFFF',
     radius: '16px',
@@ -33,104 +34,104 @@ export const airbnb = {
 
   prepared: {
     eyebrow: 'A content engine, proposed for',
-    // small honest framing that this was made for them specifically
-    note: 'We read your site, your feeds, and how you show up. Here is one week of what we’d run for you.',
+    note: 'We pulled your last 25 posts and the Reddit threads people are actually writing about you. Here’s one week of what we’d run, built on what we found.',
   },
 
   hero: {
-    headline: 'The most-saved stays on the internet deserve the internet’s loudest feeds.',
-    sub: 'You already make people stop, screenshot and send. We take that instinct and manufacture it across thousands of native accounts on TikTok and Reddit — every week, in your voice.',
+    headline: 'You make the best travel content on the internet. Almost nobody sees most of it.',
+    sub: 'Your culture posts hit millions; the rest of the feed gets follower-tier reach — and the loudest conversations about you are happening on Reddit without you. We take what already works and manufacture its reach, across thousands of native accounts, every week, in your voice.',
     ctaPrimary: 'See the week we built',
     ctaSecondary: 'Book 20 minutes',
-    stat: { value: 'Guest favourite', label: 'is already your best hook. We just point it at the whole feed.' },
   },
 
-  // "What we saw" — grounded in a real read of Airbnb's content and marketing.
+  // "What we saw" — grounded in the real pull, not guesses.
   research: {
-    heading: 'What we saw when we studied you',
-    lead: 'Half a day inside your site, your owned channels and where your stays actually get talked about. Three things stood out.',
+    heading: 'What we saw when we studied your feed',
+    lead: 'We read your last 25 posts and the Reddit threads written about you this month. Three things jumped out.',
     insights: [
       {
-        stat: '“Guest favourite”',
-        title: 'Your funnel is a save button',
+        stat: '7.7M vs 2K',
+        title: 'Your culture posts fly. Your campaign posts don’t.',
         detail:
-          'Every unique stay you surface gets saved, screenshotted and dropped into a group chat. That reflex — “I have to send this” — is the entire top of your funnel. It’s repeatable, and right now you only trigger it on your own channels.',
+          'The culturally-rooted ones — a love letter to a host nation, a creator breaking his foot for the bit — cleared millions of views. Most of the feed, the ticket drops and bracket updates, sits at two to four thousand. You’re making culture-tier creative and getting follower-tier reach on the bulk of it. The fix isn’t better content — it’s volume and distribution of what already works.',
       },
       {
-        stat: '2 channels',
-        title: 'You look incredible — in a handful of places',
+        stat: 'r/airbnb',
+        title: 'Your loudest conversations are happening without you',
         detail:
-          'Your owned feeds nail the aspirational-but-real look. The gap is reach: the travel-inspo, budget-stay and city-specific corners of TikTok and Reddit where booking intent forms are wide open, and mostly not you.',
+          'The top Airbnb threads on Reddit right now: “greed is ruining the lake,” a $10,000 cancelled booking, the fallout from New York’s ban. Real intent, real sentiment, thousands of readers — and the brand isn’t in the room. That’s a narrative you can enter natively, at scale, with the authentic host and guest stories you already have.',
       },
       {
-        stat: '“send me one like this”',
-        title: 'Discovery moved into the feed',
+        stat: '3 creators',
+        title: 'You lean on a few big names; the corners are open',
         detail:
-          'People shop for stays inside TikTok slideshows and Reddit threads now, not just search. Native content in those feeds is the new front door — and it rewards volume and variety, which is exactly what a device fleet is for.',
+          'The creator series and partners are great, but the reach is centralised. The travel-tok, host-story and city-guide corners — where someone actually decides which city to fly to and where to stay — are wide open, and mostly not you.',
       },
     ],
   },
 
-  // "What we'd make" — aligned to the DNA above.
+  // "What we'd make" — modeled on their real DNA (host-city travel, Experiences,
+  // "hosts who feel like family", creator-POV city culture).
   content: {
     heading: 'What we’d make for you — week one',
-    lead: 'Native slideshows and threads seeded from your real “Guest favourite” listings, in your aesthetic, pushed across the fleet. Not ads. Content people actually save.',
+    lead: 'Modeled on your last 25 posts, in your voice, not a brand-ad voice. Native slideshows and threads built to travel the way your best posts already do.',
     tiktoks: [
       {
-        handle: '@stays.india',
-        avatarImg: 'https://cdn.jsdelivr.net/gh/unworld11/warmup@main/public/content/airbnb/02-treehouse.jpg',
-        music: 'original sound – stays.india',
-        caption: '7 stays you have to save before they book out 🧳 #airbnb #travelindia #uniquestays',
+        handle: '@matchday.cities',
+        avatarImg: `${A}/host-city.jpg`,
+        music: 'original sound – matchday.cities',
+        caption: 'how to do a host city like you actually live there 🌍 #worldcup #travel #hostcity',
         slides: [
-          { img: 'https://cdn.jsdelivr.net/gh/unworld11/warmup@main/public/content/airbnb/01-aframe.jpg', overlay: 'stays in India that don’t look real', sub: 'save this before it’s booked out' },
-          { img: 'https://cdn.jsdelivr.net/gh/unworld11/warmup@main/public/content/airbnb/02-treehouse.jpg', overlay: '#1 · the glass treehouse', sub: '₹4,200 / night · Guest favourite' },
-          { img: 'https://cdn.jsdelivr.net/gh/unworld11/warmup@main/public/content/airbnb/03-goa-pool.jpg', overlay: '#2 · the Goa infinity villa', sub: '₹6,800 / night' },
-          { img: 'https://cdn.jsdelivr.net/gh/unworld11/warmup@main/public/content/airbnb/04-haveli.jpg', overlay: '#3 · the blue-city haveli', sub: '₹3,100 / night' },
-          { img: 'https://cdn.jsdelivr.net/gh/unworld11/warmup@main/public/content/airbnb/05-houseboat.jpg', overlay: '#4 · wake up on the water', sub: 'Kerala houseboat' },
-          { img: 'https://cdn.jsdelivr.net/gh/unworld11/warmup@main/public/content/airbnb/08-cliff-villa.jpg', overlay: 'which one first? 👇', sub: '' },
+          { img: `${A}/host-city.jpg`, overlay: 'do a host city like you live there', sub: 'save this before you fly out' },
+          { img: `${A}/watch-party.jpg`, overlay: 'the outdoor watch parties locals actually go to', sub: '' },
+          { img: `${A}/food-local.jpg`, overlay: 'eat where the neighbourhood eats', sub: 'skip the tourist strip' },
+          { img: `${A}/creator-pov.jpg`, overlay: 'get pleasantly lost in the good streets', sub: '' },
+          { img: `${A}/wc-fans.jpg`, overlay: 'which city are you flying to? 👇', sub: '' },
         ],
-        stats: { likes: '48.2k', comments: '1,204', saves: '22.4k', shares: '9,881' },
+        stats: { likes: '58.1k', comments: '1,806', saves: '31.4k', shares: '12.2k' },
       },
       {
-        handle: '@cozy.stays',
-        avatarImg: 'https://cdn.jsdelivr.net/gh/unworld11/warmup@main/public/content/airbnb/06-interior-morning.jpg',
-        music: 'trending · aesthetic morning',
-        caption: 'POV: you booked the treehouse everyone’s been saving 🌲',
+        handle: '@stayswithsoul',
+        avatarImg: `${A}/host-welcome.jpg`,
+        music: 'trending · belong anywhere',
+        caption: 'POV: you booked a room and left with a family 🫶',
         slides: [
-          { img: 'https://cdn.jsdelivr.net/gh/unworld11/warmup@main/public/content/airbnb/06-interior-morning.jpg', overlay: 'POV: you booked the stay everyone’s saving', sub: '' },
-          { img: 'https://cdn.jsdelivr.net/gh/unworld11/warmup@main/public/content/airbnb/07-balcony-pov.jpg', overlay: 'this is the view you wake up to', sub: '₹3,000 / night' },
-          { img: 'https://cdn.jsdelivr.net/gh/unworld11/warmup@main/public/content/airbnb/02-treehouse.jpg', overlay: 'still can’t believe it was this cheap', sub: 'Guest favourite · Superhost' },
+          { img: `${A}/host-welcome.jpg`, overlay: 'POV: your host basically adopts you for the week', sub: '' },
+          { img: `${A}/food-local.jpg`, overlay: 'they set a place for you at the table', sub: '' },
+          { img: `${A}/keys-welcome.jpg`, overlay: 'you came for a bed, you left with a home', sub: 'belong anywhere' },
         ],
-        stats: { likes: '71.9k', comments: '2,010', saves: '39.1k', shares: '14.2k' },
+        stats: { likes: '96.7k', comments: '2,540', saves: '44.8k', shares: '19.3k' },
       },
       {
-        handle: '@weekend.escapes',
-        avatarImg: 'https://cdn.jsdelivr.net/gh/unworld11/warmup@main/public/content/airbnb/03-goa-pool.jpg',
-        music: 'original sound – weekend.escapes',
-        caption: 'Airbnbs under ₹5k that feel like ₹50k 👀 which is your pick?',
+        handle: '@localsonly.pov',
+        avatarImg: `${A}/creator-pov.jpg`,
+        music: 'original sound – localsonly.pov',
+        caption: 'let a local show you the city tourists never find 🛵',
         slides: [
-          { img: 'https://cdn.jsdelivr.net/gh/unworld11/warmup@main/public/content/airbnb/04-haveli.jpg', overlay: 'Airbnbs under ₹5k that feel like ₹50k', sub: 'wait for #3' },
-          { img: 'https://cdn.jsdelivr.net/gh/unworld11/warmup@main/public/content/airbnb/05-houseboat.jpg', overlay: 'the ₹2,900 houseboat', sub: 'Guest favourite' },
-          { img: 'https://cdn.jsdelivr.net/gh/unworld11/warmup@main/public/content/airbnb/01-aframe.jpg', overlay: 'the ₹4,100 forest A-frame', sub: 'superhost' },
-          { img: 'https://cdn.jsdelivr.net/gh/unworld11/warmup@main/public/content/airbnb/08-cliff-villa.jpg', overlay: 'the ₹4,800 cliff villa', sub: 'save it 📌' },
+          { img: `${A}/creator-pov.jpg`, overlay: 'the city tourists never actually see', sub: 'let a local drive' },
+          { img: `${A}/stadium-pov.jpg`, overlay: 'the pre-match walk hits different with someone who lives here', sub: '' },
+          { img: `${A}/wc-fans.jpg`, overlay: 'this is what “belong anywhere” actually looks like', sub: '' },
+          { img: `${A}/watch-party.jpg`, overlay: 'save it for your trip 📌', sub: '' },
         ],
-        stats: { likes: '33.7k', comments: '904', saves: '18.9k', shares: '6,402' },
+        stats: { likes: '40.3k', comments: '1,120', saves: '22.6k', shares: '8,410' },
       },
     ],
+    // Enters the REAL (mostly critical) Reddit conversation with an authentic,
+    // credible positive story — the narrative gap from insight #2.
     reddit: {
-      subreddit: 'r/IndiaTravel',
-      posted: '7h',
-      author: 'u/wanderwithme',
-      title: 'Just realised you can rent an entire villa in Goa for less than a hostel bed in Europe',
-      thumb: 'https://cdn.jsdelivr.net/gh/unworld11/warmup@main/public/content/airbnb/03-goa-pool.jpg',
-      upvotes: '4.1k',
-      commentCount: '318',
+      subreddit: 'r/travel',
+      posted: '9h',
+      author: 'u/awaydays_',
+      title: 'Booked a place for the tournament expecting tourist-trap chaos. My host basically adopted us for the week.',
+      thumb: `${A}/host-welcome.jpg`,
+      upvotes: '3.4k',
+      commentCount: '227',
       body:
-        'Was doom-scrolling stays for a December trip and fell into a rabbit hole of “Guest favourite” places — entire villas, treehouses, backwater houseboats. Half of them are cheaper per night than the dorm I stayed in in Lisbon. Genuinely how is this real.',
+        'Went in bracing for the horror stories you read on here. Instead the host left a hand-written list of where locals actually watch the matches, walked us to a family-run spot two streets over on the first night, and texted to check we’d sorted tickets. Genuinely one of the best trips I’ve had.',
       comments: [
-        { author: 'u/ghumakkad', up: '812', text: 'ok drop the link i need this for december 😭' },
-        { author: 'u/wanderwithme', op: true, up: '540', text: 'it’s all on airbnb — filter “entire place” + guest favourite, sort by rating. the treehouse one is unreal' },
-        { author: 'u/tripchhori', up: '203', text: 'saving this whole thread' },
+        { author: 'u/lakesideskeptic', up: '512', text: 'after the threads on here lately i genuinely did not expect to read this. glad it still exists.' },
+        { author: 'u/awaydays_', op: true, up: '388', text: 'i know. i almost booked a hotel out of fear. the good hosts really are the whole thing.' },
+        { author: 'u/onematchday', up: '164', text: 'saving this, flying out for the quarters and needed to hear it' },
       ],
     },
   },
@@ -139,9 +140,9 @@ export const airbnb = {
     heading: 'How your week actually runs',
     lead: 'No dashboard to learn, no calendar to fill. You greenlight once and the loop runs — this is the engine behind the content above.',
     steps: [
-      { n: '01', title: 'We study you', detail: 'Your listings, your best-performing posts, the exact way your stays get talked about. That read sets every template — so it always sounds like you, never like an ad.' },
-      { n: '02', title: 'We make the week', detail: 'Native slideshows and threads like the three above, seeded from real “Guest favourite” stays. Made to be saved and sent, not scrolled past.' },
-      { n: '03', title: 'The fleet posts it', detail: 'Thousands of aged, warmed accounts push it across TikTok and Reddit as real people finding your stays. Not one megaphone — a thousand quiet recommendations.' },
+      { n: '01', title: 'We study you', detail: 'We pull your last 25 posts and the threads people write about you, and read what actually travels versus what falls flat. That read sets every template — so it sounds like your best work, never like an ad.' },
+      { n: '02', title: 'We make the week', detail: 'Native slideshows and threads like the three above, modeled on what already resonates for you. Made to be saved and sent, not scrolled past.' },
+      { n: '03', title: 'The fleet posts it', detail: 'Thousands of aged, warmed accounts push it across TikTok and Reddit as real people finding your stays and experiences. Not one megaphone — a thousand quiet recommendations, including in the threads you’re currently absent from.' },
       { n: '04', title: 'Saves compound', detail: 'We watch what gets saved and sent, double down on the winners, and feed them into next week. Every week gets sharper. Zero ad spend.' },
     ],
     stats: [
@@ -154,7 +155,7 @@ export const airbnb = {
 
   cta: {
     headline: 'This is one week. Imagine fifty-two.',
-    sub: 'Everything on this page was made for Airbnb, by us, this week. If it made you want to reply — that’s exactly the reflex we sell.',
+    sub: 'Everything on this page was built from your real posts and the real conversations about you, this week. If it made you want to reply — that’s exactly the reflex we sell.',
     button: 'Book the next 20 minutes',
   },
 };
