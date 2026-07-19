@@ -105,8 +105,9 @@ export default function Generate() {
   async function ensureImages(cfg, existing) {
     const need = promptsOf(cfg).filter((p) => !existing[p]);
     if (!need.length) return existing;
+    const style = cfg.imageStyle ? `. ${cfg.imageStyle}` : '';
     const pairs = await Promise.all(need.map(async (p) => {
-      try { const { dataUrl } = await post('/api/image', { prompt: p }); return [p, dataUrl]; } catch { return [p, '']; }
+      try { const { dataUrl } = await post('/api/image', { prompt: p + style }); return [p, dataUrl]; } catch { return [p, '']; }
     }));
     return { ...existing, ...Object.fromEntries(pairs) };
   }

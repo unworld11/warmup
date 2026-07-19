@@ -28,6 +28,7 @@ export const generateDeal = task({
     metadata.set('phase', 'image');
     metadata.set('detail', `Generating ${unique.length} content images`);
 
+    const style = config.imageStyle ? `. ${config.imageStyle}` : '';
     const imgMap = {};
     let done = 0;
     let idx = 0;
@@ -36,7 +37,7 @@ export const generateDeal = task({
         const myIdx = idx++;
         const p = unique[myIdx];
         try {
-          const dataUrl = await generateImage(p);
+          const dataUrl = await generateImage(p + style);
           imgMap[p] = await uploadDataUrl(dataUrl, `_gen/${ctx.run.id}/${myIdx}`);
         } catch {
           imgMap[p] = '';
