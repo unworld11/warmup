@@ -1,3 +1,4 @@
+import '../../../lib/env';
 import { tasks } from '@trigger.dev/sdk';
 
 export const runtime = 'nodejs';

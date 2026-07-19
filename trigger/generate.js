@@ -1,3 +1,4 @@
+import '../lib/env';
 import { task, metadata } from '@trigger.dev/sdk';
 import { extractSite, researchTikTok, researchReddit, synthesize, generateImage } from '../lib/pipeline';
 import { uploadDataUrl } from '../lib/db';

@@ -77,7 +77,7 @@ export default function Generate() {
       if (j.error) throw new Error(j.error);
       if (j.metadata) { setPhase(j.metadata.phase || ''); setDetail(j.metadata.detail || ''); }
       if (j.status === 'COMPLETED') return j.output;
-      if (FAILED.includes(j.status)) throw new Error(`Generation failed (${j.status}).`);
+      if (FAILED.includes(j.status)) throw new Error(j.error || `Generation failed (${j.status}).`);
     }
   }
 
