@@ -47,7 +47,7 @@ export const generateDeal = task({
         metadata.set('detail', `Generated ${done}/${unique.length} images`);
       }
     };
-    await Promise.all([worker(), worker(), worker()]);
+    await Promise.all([worker(), worker(), worker(), worker(), worker()]);
 
     metadata.set('phase', 'page');
     metadata.set('detail', `Designing the page in ${site.name}'s style`);
