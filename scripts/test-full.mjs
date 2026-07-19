@@ -4,7 +4,7 @@ import fs from 'node:fs';
 for (const line of fs.readFileSync(new URL('../.env.local', import.meta.url), 'utf8').split('\n')) {
   const m = line.match(/^([A-Za-z0-9_]+)=(.*)$/); if (m) process.env[m[1]] = m[2];
 }
-const { extractSite, researchTikTok, researchReddit, synthesize, generateImage, generatePage, slideImagePrompt } = await import('../lib/pipeline.js');
+const { extractSite, researchTikTok, researchReddit, synthesize, generateImage, generatePage, slideImagePrompt, analyzeReferences } = await import('../lib/pipeline.js');
 
 const url = process.argv[2] || 'nike.com';
 console.log('1 extract', url);
@@ -16,8 +16,16 @@ const [tiktok, reddit] = await Promise.all([researchTikTok(site.tiktokHandle), r
 console.log('  tiktok posts:', tiktok.length, '| reddit threads:', reddit.length);
 tiktok.slice(0, 3).forEach((t) => console.log(`   TT ${t.isSlideshow ? '[slides]' : '[video]'} "${(t.caption || '').slice(0, 60)}" ${t.music ? '♪ ' + t.music.slice(0, 30) : ''}`));
 
+console.log('2b vision: looking at their real post images');
+const visualBrief = await analyzeReferences(tiktok);
+if (visualBrief) {
+  console.log('  sticker style:', (visualBrief.stickerStyle || '').slice(0, 100));
+  console.log('  signature:', (visualBrief.visualSignature || '').slice(0, 100));
+  (visualBrief.posts || []).forEach((p, i) => console.log(`   ref${i + 1}: ${(p.looks || '').slice(0, 80)}`));
+} else { console.log('  (no visual brief)'); }
+
 console.log('3 synthesize (replicate + creative)');
-const config = await synthesize({ site, tiktok, reddit });
+const config = await synthesize({ site, tiktok, reddit, visualBrief });
 console.log('  slideshows:', (config.content?.tiktoks || []).length, '| videos:', (config.content?.videos || []).length, '| reddits:', (config.content?.reddits || []).length);
 console.log('  imageStyle:', (config.imageStyle || '').slice(0, 120));
 (config.content?.tiktoks || []).forEach((t) => console.log(`   @${t.handle} [${t.format}] ♪${(t.music || '').slice(0, 24)} :: ${(t.slides || []).map((s) => s.overlay).join(' / ')}`));
@@ -26,7 +34,7 @@ console.log('  imageStyle:', (config.imageStyle || '').slice(0, 120));
 console.log('3 images (baking hook text into slides)');
 const style = config.imageStyle ? `. ${config.imageStyle}` : '';
 const jobs = [];
-(config.content?.tiktoks || []).forEach((t) => (t.slides || []).forEach((s) => { if (s.imagePrompt) jobs.push({ prompt: slideImagePrompt(s, config.imageStyle), quality: 'high' }); }));
+(config.content?.tiktoks || []).forEach((t) => (t.slides || []).forEach((s) => { if (s.imagePrompt) jobs.push({ prompt: slideImagePrompt(s, config), quality: 'high' }); }));
 (config.content?.videos || []).forEach((v) => { if (v.imagePrompt) jobs.push({ prompt: v.imagePrompt + style, quality: 'medium' }); });
 const seen = new Set();
 const unique = jobs.filter((j) => !seen.has(j.prompt) && seen.add(j.prompt));

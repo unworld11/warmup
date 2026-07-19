@@ -1,6 +1,6 @@
 import '../lib/env';
 import { task, metadata } from '@trigger.dev/sdk';
-import { extractSite, researchTikTok, researchReddit, synthesize, generateImage, generatePage, slideImagePrompt } from '../lib/pipeline';
+import { extractSite, researchTikTok, researchReddit, synthesize, generateImage, generatePage, slideImagePrompt, analyzeReferences } from '../lib/pipeline';
 import { uploadDataUrl } from '../lib/db';
 
 // The whole generate pipeline, off the serverless clock. Emits progress via
@@ -18,15 +18,17 @@ export const generateDeal = task({
     const [tiktok, reddit] = await Promise.all([researchTikTok(site.tiktokHandle), researchReddit(site.name)]);
 
     metadata.set('phase', 'study');
-    metadata.set('detail', `Studying ${tiktok.length} posts with Sol`);
-    const config = await synthesize({ site, tiktok, reddit });
+    metadata.set('detail', `Looking at ${tiktok.length} of their real posts`);
+    const visualBrief = await analyzeReferences(tiktok);
+    metadata.set('detail', `Studying their content with Sol`);
+    const config = await synthesize({ site, tiktok, reddit, visualBrief });
 
     // Slideshow slides bake the hook text into the image as a TikTok sticker, so
     // they render at high quality for legible text; video thumbs are plain scenes.
     const style = config.imageStyle ? `. ${config.imageStyle}` : '';
     const jobs = [];
     (config.content?.tiktoks || []).forEach((t) => (t.slides || []).forEach((s) => {
-      if (s.imagePrompt) jobs.push({ prompt: slideImagePrompt(s, config.imageStyle), quality: 'high' });
+      if (s.imagePrompt) jobs.push({ prompt: slideImagePrompt(s, config), quality: 'high' });
     }));
     (config.content?.videos || []).forEach((v) => {
       if (v.imagePrompt) jobs.push({ prompt: v.imagePrompt + style, quality: 'medium' });
