@@ -28,8 +28,16 @@ export default function StrategyPage({ brand }) {
     '--radius-lg': t.radiusLg,
     '--brand-font': t.font,
   };
+  // Load the brand's detected Google Font at render time (Next hoists <link> to head),
+  // so we're not capped at the two preloaded faces.
+  const gf = brand.googleFont;
+  const fontHref = gf
+    ? `https://fonts.googleapis.com/css2?family=${gf.trim().replace(/\s+/g, '+')}:wght@400;500;600;700;800&display=swap`
+    : null;
+
   return (
     <div style={vars} className="wm-root">
+      {fontHref && <link rel="stylesheet" href={fontHref} />}
       <Nav brand={brand} />
       <Hero brand={brand} />
       <Research brand={brand} />

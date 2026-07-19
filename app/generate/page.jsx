@@ -27,6 +27,7 @@ function assemble(config, site, imgMap) {
   const thumb = tiktoks[ti]?.slides?.[si]?.img || tiktoks[0]?.slides?.[0]?.img || '';
   return {
     name: config.name || site?.name || 'Brand', logo: '', bookingUrl: BOOKING,
+    googleFont: config.googleFont || '',
     tokens: { ...FALLBACK_TOKENS, ...(config.tokens || {}) },
     prepared: config.prepared || { eyebrow: 'A content engine, proposed for', note: '' },
     hero: config.hero || {},
