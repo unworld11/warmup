@@ -4,7 +4,7 @@ import fs from 'node:fs';
 for (const line of fs.readFileSync(new URL('../.env.local', import.meta.url), 'utf8').split('\n')) {
   const m = line.match(/^([A-Za-z0-9_]+)=(.*)$/); if (m) process.env[m[1]] = m[2];
 }
-const { extractSite, researchTikTok, researchReddit, synthesize, generateImage, generatePage } = await import('../lib/pipeline.js');
+const { extractSite, researchTikTok, researchReddit, synthesize, generateImage, generatePage, slideImagePrompt } = await import('../lib/pipeline.js');
 
 const url = process.argv[2] || 'nike.com';
 console.log('1 extract', url);
@@ -23,22 +23,23 @@ console.log('  imageStyle:', (config.imageStyle || '').slice(0, 120));
 (config.content?.tiktoks || []).forEach((t) => console.log(`   @${t.handle} [${t.format}] ♪${(t.music || '').slice(0, 24)} :: ${(t.slides || []).map((s) => s.overlay).join(' / ')}`));
 (config.content?.reddits || []).forEach((r) => console.log(`   r/${r.subreddit} (${r.upvotes}) ${r.title}`));
 
-console.log('3 images');
-const prompts = [];
-(config.content?.tiktoks || []).forEach((t) => (t.slides || []).forEach((s) => s.imagePrompt && prompts.push(s.imagePrompt)));
-(config.content?.videos || []).forEach((v) => v.imagePrompt && prompts.push(v.imagePrompt));
-const unique = [...new Set(prompts)];
+console.log('3 images (baking hook text into slides)');
 const style = config.imageStyle ? `. ${config.imageStyle}` : '';
+const jobs = [];
+(config.content?.tiktoks || []).forEach((t) => (t.slides || []).forEach((s) => { if (s.imagePrompt) jobs.push({ prompt: slideImagePrompt(s, config.imageStyle), quality: 'high' }); }));
+(config.content?.videos || []).forEach((v) => { if (v.imagePrompt) jobs.push({ prompt: v.imagePrompt + style, quality: 'medium' }); });
+const seen = new Set();
+const unique = jobs.filter((j) => !seen.has(j.prompt) && seen.add(j.prompt));
 fs.mkdirSync('/tmp/bespoke-img', { recursive: true });
 const imgMap = {}; let i = 0;
 await Promise.all([0, 1, 2, 3, 4].map(async () => {
   while (i < unique.length) {
-    const my = i++; const p = unique[my];
+    const my = i++; const { prompt, quality } = unique[my];
     try {
-      const d = await generateImage(p + style);
+      const d = await generateImage(prompt, quality);
       fs.writeFileSync(`/tmp/bespoke-img/f${my}.png`, Buffer.from(d.split(',')[1], 'base64'));
-      imgMap[p] = `/bespoke-img/f${my}.png`;
-    } catch (e) { imgMap[p] = ''; console.log('  img fail', e.message); }
+      imgMap[prompt] = `/bespoke-img/f${my}.png`;
+    } catch (e) { imgMap[prompt] = ''; console.log('  img fail', e.message); }
   }
 }));
 console.log('  images:', Object.values(imgMap).filter(Boolean).length, '/', unique.length);

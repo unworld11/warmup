@@ -1,6 +1,6 @@
 import '../lib/env';
 import { task, metadata } from '@trigger.dev/sdk';
-import { extractSite, researchTikTok, researchReddit, synthesize, generateImage, generatePage } from '../lib/pipeline';
+import { extractSite, researchTikTok, researchReddit, synthesize, generateImage, generatePage, slideImagePrompt } from '../lib/pipeline';
 import { uploadDataUrl } from '../lib/db';
 
 // The whole generate pipeline, off the serverless clock. Emits progress via
@@ -21,27 +21,34 @@ export const generateDeal = task({
     metadata.set('detail', `Studying ${tiktok.length} posts with Sol`);
     const config = await synthesize({ site, tiktok, reddit });
 
-    const prompts = [];
-    (config.content?.tiktoks || []).forEach((t) => (t.slides || []).forEach((s) => s.imagePrompt && prompts.push(s.imagePrompt)));
-    (config.content?.videos || []).forEach((v) => v.imagePrompt && prompts.push(v.imagePrompt));
-    const unique = [...new Set(prompts)];
+    // Slideshow slides bake the hook text into the image as a TikTok sticker, so
+    // they render at high quality for legible text; video thumbs are plain scenes.
+    const style = config.imageStyle ? `. ${config.imageStyle}` : '';
+    const jobs = [];
+    (config.content?.tiktoks || []).forEach((t) => (t.slides || []).forEach((s) => {
+      if (s.imagePrompt) jobs.push({ prompt: slideImagePrompt(s, config.imageStyle), quality: 'high' });
+    }));
+    (config.content?.videos || []).forEach((v) => {
+      if (v.imagePrompt) jobs.push({ prompt: v.imagePrompt + style, quality: 'medium' });
+    });
+    const seen = new Set();
+    const unique = jobs.filter((j) => !seen.has(j.prompt) && seen.add(j.prompt));
 
     metadata.set('phase', 'image');
     metadata.set('detail', `Generating ${unique.length} content images`);
 
-    const style = config.imageStyle ? `. ${config.imageStyle}` : '';
     const imgMap = {};
     let done = 0;
     let idx = 0;
     const worker = async () => {
       while (idx < unique.length) {
         const myIdx = idx++;
-        const p = unique[myIdx];
+        const { prompt, quality } = unique[myIdx];
         try {
-          const dataUrl = await generateImage(p + style);
-          imgMap[p] = await uploadDataUrl(dataUrl, `_gen/${ctx.run.id}/${myIdx}`);
+          const dataUrl = await generateImage(prompt, quality);
+          imgMap[prompt] = await uploadDataUrl(dataUrl, `_gen/${ctx.run.id}/${myIdx}`);
         } catch {
-          imgMap[p] = '';
+          imgMap[prompt] = '';
         }
         done += 1;
         metadata.set('detail', `Generated ${done}/${unique.length} images`);
