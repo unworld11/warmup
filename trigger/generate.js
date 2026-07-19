@@ -1,6 +1,6 @@
 import '../lib/env';
 import { task, metadata } from '@trigger.dev/sdk';
-import { extractSite, researchTikTok, researchReddit, synthesize, generateImage } from '../lib/pipeline';
+import { extractSite, researchTikTok, researchReddit, synthesize, generateImage, generatePage } from '../lib/pipeline';
 import { uploadDataUrl } from '../lib/db';
 
 // The whole generate pipeline, off the serverless clock. Emits progress via
@@ -23,6 +23,7 @@ export const generateDeal = task({
 
     const prompts = [];
     (config.content?.tiktoks || []).forEach((t) => (t.slides || []).forEach((s) => s.imagePrompt && prompts.push(s.imagePrompt)));
+    (config.content?.videos || []).forEach((v) => v.imagePrompt && prompts.push(v.imagePrompt));
     const unique = [...new Set(prompts)];
 
     metadata.set('phase', 'image');
@@ -48,7 +49,17 @@ export const generateDeal = task({
     };
     await Promise.all([worker(), worker(), worker()]);
 
+    metadata.set('phase', 'page');
+    metadata.set('detail', `Designing the page in ${site.name}'s style`);
+    let html = '';
+    let htmlError = '';
+    try {
+      html = await generatePage(site, config, imgMap);
+    } catch (e) {
+      htmlError = e.message || 'page generation failed';
+    }
+
     metadata.set('phase', 'done');
-    return { site, config, imgMap };
+    return { site, config, imgMap, html, htmlError };
   },
 });

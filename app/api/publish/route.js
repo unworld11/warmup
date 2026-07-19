@@ -1,28 +1,19 @@
-import { uploadDataUrl, saveDeal, slugify } from '../../../lib/db';
+import { saveDeal, slugify } from '../../../lib/db';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
 export const dynamic = 'force-dynamic';
 
-// Takes a generated brand config (images as inline data URLs), moves the images
-// to storage, saves the deal as published, and returns its live slug.
+// Saves a generated bespoke page (a full self-contained HTML document whose
+// images already point at persistent storage URLs) as a published deal, and
+// returns its live slug.
 export async function POST(req) {
   try {
-    const { brand } = await req.json();
-    if (!brand?.name) return Response.json({ error: 'brand required' }, { status: 400 });
-    const slug = slugify(brand.name);
-
-    const tiktoks = await Promise.all((brand.content?.tiktoks || []).map(async (t, ti) => {
-      const slides = await Promise.all((t.slides || []).map(async (s, si) => ({
-        ...s, img: await uploadDataUrl(s.img, `${slug}/t${ti}-s${si}`),
-      })));
-      return { ...t, slides, avatarImg: slides[0]?.img || '' };
-    }));
-    const reddit = { ...(brand.content?.reddit || {}), thumb: tiktoks[0]?.slides?.[0]?.img || '' };
-
-    const config = { ...brand, content: { ...brand.content, tiktoks, reddit } };
-    await saveDeal({ slug, url: brand.sourceUrl || '', brandName: brand.name, config, status: 'published' });
-
+    const { html, name, sourceUrl } = await req.json();
+    if (!html) return Response.json({ error: 'html required' }, { status: 400 });
+    const brandName = name || 'brand';
+    const slug = slugify(brandName);
+    await saveDeal({ slug, url: sourceUrl || '', brandName, config: { name: brandName, html, sourceUrl }, status: 'published' });
     return Response.json({ slug, path: `/${slug}` });
   } catch (e) {
     return Response.json({ error: e.message || 'publish failed' }, { status: 500 });

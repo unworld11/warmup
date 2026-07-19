@@ -66,6 +66,7 @@
 /* ------------------------------- misc ---------------------------------- */
 .error { max-width: 1040px; margin: 0 auto; padding: 12px 24px; color: #c0143c; font-size: 14.5px; }
 .fadeIn { animation: fade .5s ease; }
+.frame { width: 100%; height: calc(100vh - 128px); border: 0; display: block; background: #fff; animation: fade .5s ease; }
 .spin { width: 15px; height: 15px; border: 2px solid #e3d6fb; border-top-color: #6d28d9; border-radius: 99px; display: inline-block; animation: rot .7s linear infinite; }
 
 @keyframes pulse { 0%, 100% { box-shadow: 0 0 0 6px rgba(109,40,217,0.16); } 50% { box-shadow: 0 0 0 11px rgba(109,40,217,0.04); } }

@@ -1,48 +1,17 @@
 'use client';
 
 import { useState } from 'react';
-import StrategyPage from '../../components/StrategyPage';
 import s from './studio.module.css';
 
-const FALLBACK_TOKENS = {
-  red: '#1a1a1a', redDark: '#000000', gradient: 'linear-gradient(135deg,#333,#000)',
-  ink: '#1a1a1a', muted: '#6a6a6a', line: '#e6e6e6', surface: '#f6f6f6', bg: '#ffffff',
-  card: '#ffffff', navBg: 'rgba(255,255,255,0.92)', onAccent: '#ffffff',
-  ctaBg: 'linear-gradient(135deg,#333,#000)', ctaText: '#ffffff',
-  radius: '16px', radiusLg: '24px', font: 'var(--font-manrope), system-ui, sans-serif',
-};
-const BOOKING = 'mailto:you@yourteam.com?subject=Re%3A%20the%20page%20you%20built';
-const STEPS = [{ key: 'research', label: 'Research' }, { key: 'study', label: 'Study' }, { key: 'image', label: 'Imagery' }];
+const STEPS = [
+  { key: 'research', label: 'Research' },
+  { key: 'study', label: 'Study' },
+  { key: 'image', label: 'Imagery' },
+  { key: 'page', label: 'Design' },
+];
 const CHIPS = ['airbnb.com', 'spotify.com', 'nike.com', 'glossier.com'];
 const FAILED = ['FAILED', 'CRASHED', 'CANCELED', 'SYSTEM_FAILURE', 'INTERRUPTED', 'TIMED_OUT', 'EXPIRED'];
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-
-function assemble(config, site, imgMap) {
-  const tiktoks = (config.content?.tiktoks || []).map((t) => {
-    const slides = (t.slides || []).map((sl) => ({ img: imgMap[sl.imagePrompt] || '', overlay: sl.overlay || '', sub: sl.sub || '' }));
-    return { ...t, slides, avatarImg: slides[0]?.img || '' };
-  });
-  const r = config.content?.reddit || {};
-  const [ti, si] = r.thumbFromSlide || [0, 0];
-  const thumb = tiktoks[ti]?.slides?.[si]?.img || tiktoks[0]?.slides?.[0]?.img || '';
-  return {
-    name: config.name || site?.name || 'Brand', logo: '', bookingUrl: BOOKING,
-    googleFont: config.googleFont || '',
-    tokens: { ...FALLBACK_TOKENS, ...(config.tokens || {}) },
-    prepared: config.prepared || { eyebrow: 'A content engine, proposed for', note: '' },
-    hero: config.hero || {},
-    research: config.research || { heading: '', lead: '', insights: [] },
-    content: { heading: config.content?.heading || '', lead: config.content?.lead || '', tiktoks, reddit: { ...r, thumb } },
-    scale: config.scale || { heading: '', lead: '', steps: [], stats: [] },
-    cta: config.cta || {},
-  };
-}
-
-const promptsOf = (config) => {
-  const out = [];
-  (config.content?.tiktoks || []).forEach((t) => (t.slides || []).forEach((sl) => sl.imagePrompt && out.push(sl.imagePrompt)));
-  return [...new Set(out)];
-};
 
 export default function Generate() {
   const [url, setUrl] = useState('');
@@ -50,10 +19,9 @@ export default function Generate() {
   const [error, setError] = useState('');
   const [phase, setPhase] = useState('');
   const [detail, setDetail] = useState('');
-  const [brand, setBrand] = useState(null);
   const [site, setSite] = useState(null);
   const [config, setConfig] = useState(null);
-  const [imgMap, setImgMap] = useState({});
+  const [html, setHtml] = useState('');
   const [refineText, setRefineText] = useState('');
   const [publishing, setPublishing] = useState(false);
   const [liveUrl, setLiveUrl] = useState('');
@@ -87,13 +55,14 @@ export default function Generate() {
     const target = (forced || url).trim();
     if (!target) return;
     if (forced) setUrl(forced);
-    setError(''); setBrand(null); setConfig(null); setImgMap({}); setLiveUrl(''); setBusy(true); setPhase('research'); setDetail('Starting the run…');
+    setError(''); setHtml(''); setConfig(null); setLiveUrl(''); setBusy(true); setPhase('research'); setDetail('Starting the run…');
     try {
       const { runId } = await post('/api/generate', { url: target });
       const out = await pollRun(runId);
       if (!out) throw new Error('The run finished without output.');
-      setSite(out.site); setConfig(out.config); setImgMap(out.imgMap);
-      setBrand(assemble(out.config, out.site, out.imgMap));
+      setSite(out.site); setConfig(out.config);
+      if (!out.html) throw new Error(out.htmlError ? `Page render failed: ${out.htmlError}` : 'The page did not render. Try Generate again.');
+      setHtml(out.html);
       setPhase(''); setDetail('');
     } catch (err) {
       setError(err.message || 'something went wrong');
@@ -102,24 +71,12 @@ export default function Generate() {
     }
   }
 
-  async function ensureImages(cfg, existing) {
-    const need = promptsOf(cfg).filter((p) => !existing[p]);
-    if (!need.length) return existing;
-    const style = cfg.imageStyle ? `. ${cfg.imageStyle}` : '';
-    const pairs = await Promise.all(need.map(async (p) => {
-      try { const { dataUrl } = await post('/api/image', { prompt: p + style }); return [p, dataUrl]; } catch { return [p, '']; }
-    }));
-    return { ...existing, ...Object.fromEntries(pairs) };
-  }
-
   async function refine() {
-    if (!refineText.trim() || !config) return;
+    if (!refineText.trim() || !html) return;
     setError(''); setBusy(true); setLiveUrl('');
     try {
-      const { config: revised } = await post('/api/refine', { config, instruction: refineText.trim() });
-      const map = await ensureImages(revised, imgMap);
-      setConfig(revised); setImgMap(map);
-      setBrand(assemble(revised, site, map));
+      const { html: revised } = await post('/api/refine-page', { html, instruction: refineText.trim() });
+      if (revised) setHtml(revised);
       setRefineText('');
     } catch (err) {
       setError(err.message || 'refine failed');
@@ -131,7 +88,7 @@ export default function Generate() {
   async function publish() {
     setPublishing(true); setError('');
     try {
-      const { path } = await post('/api/publish', { brand: { ...brand, sourceUrl: url.trim() } });
+      const { path } = await post('/api/publish', { html, name: config?.name || site?.name || 'brand', sourceUrl: url.trim() });
       setLiveUrl(path);
     } catch (err) {
       setError(err.message || 'publish failed');
@@ -147,7 +104,7 @@ export default function Generate() {
       <header className={s.bar}>
         <div className={s.barInner}>
           <span className={s.logo}><span className={s.logoDot} />warmup studio</span>
-          {brand && (
+          {html && (
             <form className={s.form} onSubmit={run}>
               <input className={s.input} value={url} onChange={(e) => setUrl(e.target.value)} disabled={busy} placeholder="new prospect url…" />
               <button className={s.gen} type="submit" disabled={busy}>{busy ? 'Working…' : 'Generate'}</button>
@@ -157,7 +114,7 @@ export default function Generate() {
       </header>
 
       {/* empty state */}
-      {!brand && !busy && (
+      {!html && !busy && (
         <section className={s.hero}>
           <div className={s.glow} />
           <div className={s.heroInner}>
@@ -183,7 +140,7 @@ export default function Generate() {
       )}
 
       {/* generating */}
-      {!brand && busy && (
+      {!html && busy && (
         <section className={s.progress}>
           <div className={s.steps}>
             {STEPS.map((st, i) => (
@@ -202,7 +159,7 @@ export default function Generate() {
       )}
 
       {/* result */}
-      {brand && (
+      {html && (
         <>
           <div className={s.toolbar}>
             <div className={s.toolbarInner}>
@@ -223,7 +180,7 @@ export default function Generate() {
             </div>
             {error && <p className={s.error}>⚠ {error}</p>}
           </div>
-          <div className={s.fadeIn}><StrategyPage brand={brand} /></div>
+          <iframe className={s.frame} title="preview" srcDoc={html} sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox" />
         </>
       )}
     </div>
